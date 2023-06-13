@@ -15,6 +15,11 @@ module Dossier
 
       def execute(query, report_name = nil)
         # Ensure that SQL logs show name of report generating query
+        if !@abstract_class.connection.active?
+		  Rails.logger.info " !!!DOSSIER!!! Reconnecting to database"
+		  @abstract_class.establish_connection(options)
+		  self.connection = @abstract_class.connection
+        end
         Result.new(connection.exec_query(*["\n#{query}", report_name].compact))
       rescue => e
         raise Dossier::ExecuteError.new "#{e.message}\n\n#{query}"
