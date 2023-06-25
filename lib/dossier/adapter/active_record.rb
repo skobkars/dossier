@@ -16,9 +16,9 @@ module Dossier
       def execute(query, report_name = nil)
         # Ensure that SQL logs show name of report generating query
         if !@abstract_class.connection.active?
-		  Rails.logger.info " !!!DOSSIER!!! Reconnecting to database"
-		  @abstract_class.establish_connection(options)
-		  self.connection = @abstract_class.connection
+    		  # Rails.logger.info " !!!DOSSIER!!! Reconnecting to database"
+    		  @abstract_class.establish_connection(options)
+    		  self.connection = @abstract_class.connection
         end
         Result.new(connection.exec_query(*["\n#{query}", report_name].compact))
       rescue => e
@@ -30,7 +30,7 @@ module Dossier
       def active_record_connection
         @abstract_class = Class.new(::ActiveRecord::Base) do
           self.abstract_class = true
-          
+
           # Needs a unique name for ActiveRecord's connection pool
           def self.name
             "Dossier::Adapter::ActiveRecord::Connection_#{object_id}"
